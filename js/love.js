@@ -69,8 +69,12 @@ const initial_love_top = parseFloat(window.getComputedStyle(love, null).top.slic
 function resetGif() {
     const gif = document.querySelector('.body_left img');
     if (gif) {
-        const baseSrc = gif.getAttribute('src').split('?')[0];
-        gif.setAttribute('src', baseSrc + '?t=' + Date.now());
+        const dataSrc = gif.getAttribute('data-src');
+        const currentSrc = gif.getAttribute('src');
+        const baseSrc = (dataSrc && dataSrc.split('?')[0]) || (currentSrc ? currentSrc.split('?')[0] : '');
+        if (baseSrc) {
+            gif.setAttribute('src', baseSrc + '?t=' + Date.now());
+        }
     }
 }
 
@@ -159,6 +163,8 @@ function Rise() {
 }
 
 window.onload = function () {
+    // Ensure GIF is set from data-src on first load (avoid exposing src in HTML for link previews)
+    resetGif();
     setTimeout(() => {
 
         timer = setInterval(() => {
