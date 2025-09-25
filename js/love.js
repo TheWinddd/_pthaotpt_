@@ -138,7 +138,9 @@ function Rise() {
             // After finishing the rise, fully refresh the page to restart from scratch
             setTimeout(() => {
                 if (timer) clearInterval(timer);
-                location.reload();
+                // Force-bypass cache (GitHub Pages may serve cached JS/HTML)
+                const url = window.location.href.split('#')[0].split('?')[0];
+                window.location.replace(url + '?ts=' + Date.now());
             }, 800);
         }
 
