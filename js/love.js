@@ -66,6 +66,14 @@ const block_left = parseFloat(window.getComputedStyle(block, null).left.slice(0,
 // Capture the initial top of the love container so we can reset it for looping
 const initial_love_top = parseFloat(window.getComputedStyle(love, null).top.slice(0, -2)) || 0;
 
+function resetGif() {
+    const gif = document.querySelector('.body_left img');
+    if (gif) {
+        const baseSrc = gif.getAttribute('src').split('?')[0];
+        gif.setAttribute('src', baseSrc + '?t=' + Date.now());
+    }
+}
+
 function restartAnimation() {
     // Remove all cloned blocks, keep the original first block element
     while (love.children.length > 1) {
@@ -85,6 +93,8 @@ function restartAnimation() {
     // Reset index and restart interval loop with initial delay (like first load)
     index = 0;
     if (timer) clearInterval(timer);
+    // Restart GIF so the visual loop matches the logic loop
+    resetGif();
     setTimeout(() => {
         timer = setInterval(() => {
             Next();
@@ -135,12 +145,10 @@ function Rise() {
             clearInterval(timer2);
 
             console.log("pthao");
-            // After finishing the rise, fully refresh the page to restart from scratch
+            // After finishing the rise, reset state and start over without page reload
             setTimeout(() => {
                 if (timer) clearInterval(timer);
-                // Force-bypass cache (GitHub Pages may serve cached JS/HTML)
-                const url = window.location.href.split('#')[0].split('?')[0];
-                window.location.replace(url + '?ts=' + Date.now());
+                restartAnimation();
             }, 800);
         }
 
